@@ -5,7 +5,12 @@ Un CLI simple pour baculer à une branche existante sur tous les Repositories Fr
 # Installation
 Télécharger et installer le binaire Go https://golang.org/dl
 
-Se situer à la racine du réprtoire IadNgIntranet, copier le fichier `main.go` et lancer la commande
+Se situer à la racine du réprtoire IadNgIntranet, copier le fichier `main.go` et installer les dépendances
+```shell
+go get gopkg.in/kyokomi/emoji.v1
+```
+
+Lancer la commande
 ```shell
 go run main.go -branch=nomDeLaBranche -except=production-people-css
 ```
