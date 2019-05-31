@@ -3,10 +3,9 @@ package main
 import (
 	"bytes"
 	"flag"
+	"fmt"
 	"os/exec"
 	"strings"
-
-	emoji "gopkg.in/kyokomi/emoji.v1"
 )
 
 func formatExceptFlag(rawExceptRepositories string) []string {
@@ -16,7 +15,11 @@ func formatExceptFlag(rawExceptRepositories string) []string {
 func main() {
 	futurBranchName := flag.String("branch", "", "Futur branch name")
 	rawExceptRepositories := flag.String("except", "", "Except repositores")
+	resetRepositories := flag.Bool("reset", false, "Reset repositores")
+	fetchRepositories := flag.Bool("fetch", false, "Fetch repositores")
+	pullRepositories := flag.Bool("pull", false, "Pull origin repositores")
 	flag.Parse()
+
 	exceptRepositories := formatExceptFlag(*rawExceptRepositories)
 	exceptRepositories = append(exceptRepositories, "", "", "", "", "")
 	directoriesPath := map[string]string{
@@ -42,11 +45,25 @@ func main() {
 	}
 
 	for _, element := range filterDirectoriesPath {
+		if *resetRepositories {
+			cmd := exec.Command("git", "reset --hard")
+			cmd.Run()
+		}
+
+		if *fetchRepositories {
+			cmd := exec.Command("git", "fetch")
+			cmd.Run()
+		}
+
+		if *pullRepositories {
+			cmd := exec.Command("git", "pull origin")
+			cmd.Run()
+		}
 		cmd := exec.Command("git", "checkout", *futurBranchName)
 		var out bytes.Buffer
 		cmd.Stdout = &out
 		cmd.Dir = element
 		cmd.Run()
-		emoji.Print(":tada: ", out.String())
+		fmt.Print(out.String())
 	}
 }
